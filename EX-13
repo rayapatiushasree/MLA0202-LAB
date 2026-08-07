@@ -1,0 +1,55 @@
+print("R. Ushasree")
+
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+# Sample dataset
+data = {
+    "Year": [2018, 2019, 2020, 2021, 2022],
+    "KM": [50000, 40000, 30000, 20000, 10000],
+    "Price": [500000, 600000, 700000, 800000, 900000]
+}
+
+df = pd.DataFrame(data)
+
+X = df[["Year", "KM"]]
+y = df["Price"]
+
+model = LinearRegression()
+model.fit(X, y)
+
+new_car = pd.DataFrame({
+    "Year": [2023],
+    "KM": [15000]
+})
+
+prediction = model.predict(new_car)
+
+print("Predicted Car Price: ₹", round(prediction[0], 2))print("R. Ushasree")
+
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+# Sample dataset
+data = {
+    "Year": [2018, 2019, 2020, 2021, 2022],
+    "KM": [50000, 40000, 30000, 20000, 10000],
+    "Price": [500000, 600000, 700000, 800000, 900000]
+}
+
+df = pd.DataFrame(data)
+
+X = df[["Year", "KM"]]
+y = df["Price"]
+
+model = LinearRegression()
+model.fit(X, y)
+
+new_car = pd.DataFrame({
+    "Year": [2023],
+    "KM": [15000]
+})
+
+prediction = model.predict(new_car)
+
+print("Predicted Car Price: ₹", round(prediction[0], 2))
