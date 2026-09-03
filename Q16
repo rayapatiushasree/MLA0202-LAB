@@ -1,0 +1,73 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+
+data = load_iris()
+X = data.data
+y = data.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+models = {
+    "Logistic Regression": LogisticRegression(max_iter=1000),
+    "Decision Tree": DecisionTreeClassifier(random_state=42),
+    "KNN": KNeighborsClassifier(n_neighbors=5),
+    "Naive Bayes": GaussianNB(),
+    "SVM": SVC(),
+    "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42)
+}
+
+results = {}
+
+for name, model in models.items():
+    if name in ["Logistic Regression", "KNN", "SVM"]:
+        model.fit(X_train_scaled, y_train)
+        y_pred = model.predict(X_test_scaled)
+    else:
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average="weighted")
+    recall = recall_score(y_test, y_pred, average="weighted")
+    f1 = f1_score(y_test, y_pred, average="weighted")
+
+    results[name] = [accuracy, precision, recall, f1]
+
+print("Classification Algorithm Performance")
+print("-" * 70)
+
+for name, scores in results.items():
+    print("\n", name)
+    print("Accuracy :", round(scores[0], 4))
+    print("Precision:", round(scores[1], 4))
+    print("Recall   :", round(scores[2], 4))
+    print("F1 Score :", round(scores[3], 4))
+
+names = list(results.keys())
+accuracies = [results[name][0] for name in names]
+
+plt.figure(figsize=(10, 5))
+plt.bar(names, accuracies)
+plt.xlabel("Classification Algorithm")
+plt.ylabel("Accuracy")
+plt.title("Comparison of Classification Algorithms")
+plt.xticks(rotation=30)
+plt.ylim(0, 1.1)
+plt.tight_layout()
+plt.show()
