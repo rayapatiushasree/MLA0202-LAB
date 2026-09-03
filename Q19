@@ -1,0 +1,62 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+data = {
+    "Age": [25, 35, 45, 28, 52, 40, 23, 60, 48, 33,
+            29, 50, 42, 31, 55, 27, 38, 46, 36, 58],
+    "Income": [25000, 50000, 75000, 30000, 90000, 65000, 22000, 100000,
+               85000, 45000, 32000, 80000, 70000, 40000, 95000, 28000,
+               55000, 72000, 60000, 110000],
+    "LoanAmount": [10000, 20000, 30000, 12000, 40000, 25000, 8000, 50000,
+                   35000, 18000, 15000, 30000, 28000, 16000, 45000, 10000,
+                   22000, 32000, 25000, 55000],
+    "CreditScore": [720, 680, 750, 650, 780, 710, 600, 800, 760, 690,
+                    640, 770, 730, 660, 790, 610, 700, 740, 680, 810],
+    "EmploymentYears": [2, 8, 15, 3, 20, 10, 1, 25, 18, 6,
+                        4, 17, 12, 5, 22, 2, 9, 14, 7, 28],
+    "LoanApproved": [0, 1, 1, 0, 1, 1, 0, 1, 1, 1,
+                     0, 1, 1, 0, 1, 0, 1, 1, 1, 1]
+}
+
+df = pd.DataFrame(data)
+
+X = df.drop("LoanApproved", axis=1)
+y = df["LoanApproved"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+model = GaussianNB()
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print("Bank Loan Prediction using Naive Bayes")
+print("-" * 50)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(
+    y_test,
+    y_pred,
+    target_names=["Not Approved", "Approved"],
+    zero_division=0
+))
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+customer = [[35, 65000, 25000, 720, 8]]
+
+prediction = model.predict(customer)
+
+if prediction[0] == 1:
+    print("\nLoan Status: APPROVED")
+else:
+    print("\nLoan Status: NOT APPROVED")
