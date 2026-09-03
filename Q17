@@ -1,0 +1,55 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+data = {
+    "battery_power": [842, 1021, 563, 615, 1821, 1859, 1821, 1771, 1224, 1975,
+                      1417, 1024, 953, 1200, 1900, 1600, 800, 1100, 1450, 1750],
+    "ram": [2549, 2631, 2603, 2769, 1411, 1347, 1320, 1310, 1578, 2050,
+            1900, 1700, 1500, 1800, 3000, 2500, 1000, 1400, 2200, 2800],
+    "px_height": [20, 905, 1263, 1216, 1208, 1004, 1024, 955, 876, 1200,
+                  800, 700, 900, 1100, 1300, 1000, 600, 750, 1150, 1250],
+    "px_width": [756, 1988, 1716, 1786, 1212, 1654, 1820, 1495, 1875, 1500,
+                 1400, 1300, 1600, 1800, 2200, 2000, 1000, 1200, 1900, 2100],
+    "int_memory": [7, 53, 41, 2, 7, 51, 5, 19, 19, 20,
+                   32, 16, 8, 32, 64, 32, 8, 16, 32, 64],
+    "mobile_wt": [188, 136, 145, 131, 141, 164, 139, 187, 197, 159,
+                  150, 145, 155, 165, 180, 170, 130, 145, 160, 175],
+    "price_range": [1, 2, 2, 2, 0, 0, 1, 0, 1, 2,
+                    1, 1, 0, 2, 3, 2, 0, 1, 2, 3]
+}
+
+df = pd.DataFrame(data)
+
+X = df.drop("price_range", axis=1)
+y = df["price_range"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print("Mobile Price Prediction")
+print("-" * 40)
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, zero_division=0))
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+new_mobile = [[1500, 2500, 1100, 1900, 32, 160]]
+
+prediction = model.predict(new_mobile)
+
+print("\nPredicted Price Range:", prediction[0])
